@@ -2,6 +2,7 @@ public class KnightBoard{
   public int[][] board;
   public KnightBoard(int startingRow, int startingCol){
     counter = 0;
+    solutions = 0;
     board = new int[startingRow][startingCol];}
 
   public String toString(){
@@ -44,6 +45,7 @@ public class KnightBoard{
     return true;}
 
   public int counter;
+  public int solutions;
   public boolean solveH( int r, int c, int incR, int incC){
     if(filled()){
       return true;}
@@ -58,4 +60,26 @@ public class KnightBoard{
      solveH( r - 1, c + 2, -1, 2) ||
      solveH( r - 2, c + 1, -2, 1) ||  solveH( r - 1, c - 2, -1, -2) || solveH( r - 2, c - 1, -2, -1) ||
       solveH( r  + 1, c - 2,1, -2);
-}}
+}
+  public int countSolutions(int r, int c){
+    countSolutionsH(r, c, 0, 0);
+    return solutions;}
+
+  public void countSolutionsH(int r, int c, int incR, int incC){
+    if(filled()){
+      solutions += 1;}
+    if(! valid(r, c)){
+      counter ++;
+      if(counter == 8){
+        board[r - incR][c - incC] = 0;}
+      return;}
+    solveH( r + 1, c + 2, 1, 2);
+    solveH( r + 2, c + 1, 2, 1);
+    solveH( r + 2, c - 1, 2, -1);
+    solveH( r - 1, c + 2, -1, 2);
+    solveH( r - 2, c + 1, -2, 1);
+    solveH( r - 1, c - 2, -1, -2);
+    solveH( r - 2, c - 1, -2, -1);
+    solveH( r  + 1, c - 2,1, -2);
+  }
+}
