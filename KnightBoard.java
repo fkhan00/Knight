@@ -37,17 +37,17 @@ public class KnightBoard{
   public boolean valid(int r, int c){
     return r >= 0 && c >= 0 && r < board.length && c < board.length && board[r][c] == 0;}
 
-  public boolean filled(){
-    for(int i = 0; i < board.length; i++){
-      for(int j = 0; j < board.length; j++){
-        if(board[i][j] == 0){
+  public boolean filled(int[][] ary){
+    for(int i = 0; i < ary.length; i++){
+      for(int j = 0; j < ary.length; j++){
+        if(ary[i][j] == 0){
           return false;}}}
     return true;}
 
   public int counter;
   public int solutions;
   public boolean solveH( int r, int c, int incR, int incC){
-    if(filled()){
+    if(filled(board)){
       return true;}
       System.out.println(toString());
     if(! valid (r, c)){
@@ -62,24 +62,16 @@ public class KnightBoard{
       solveH( r  + 1, c - 2,1, -2);
 }
   public int countSolutions(int r, int c){
-    countSolutionsH(r, c, 0, 0);
+    countSolutionsH(new int[board.length][board[0].length], r, c);
     return solutions;}
 
-  public void countSolutionsH(int r, int c, int incR, int incC){
-    if(filled()){
-      solutions += 1;}
+  public int countSolutionsH(int[][] ary, int r, int c){
+    if(filled(ary)){
+      return 1;}
     if(! valid(r, c)){
-      counter ++;
-      if(counter == 8){
-        board[r - incR][c - incC] = 0;}
-      return;}
-    solveH( r + 1, c + 2, 1, 2);
-    solveH( r + 2, c + 1, 2, 1);
-    solveH( r + 2, c - 1, 2, -1);
-    solveH( r - 1, c + 2, -1, 2);
-    solveH( r - 2, c + 1, -2, 1);
-    solveH( r - 1, c - 2, -1, -2);
-    solveH( r - 2, c - 1, -2, -1);
-    solveH( r  + 1, c - 2,1, -2);
+      return 0;}
+    ary[r][c] = 1;
+    return countSolutionsH(ary, r + 1, c + 2) + countSolutionsH(ary, r + 2, c + 1)  + countSolutionsH(ary, r + 2, c - 1)
+     + countSolutionsH(ary, r - 1, c + 2)  + countSolutionsH(ary, r - 2, c + 1)  + countSolutionsH(ary, r - 1, c - 2)+ countSolutionsH(ary, r - 2, c - 1)  + countSolutionsH(ary, r  + 1, c - 2);
   }
 }
