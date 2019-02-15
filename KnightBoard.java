@@ -63,7 +63,7 @@ public class KnightBoard{
 }
   public int countSolutions(int r, int c){
     return countSolutionsH(r, c, 0, 0);}
-
+    
   public int countSolutionsH(int r, int c, int incR, int incC){
     System.out.println(toString());
     if(filled(board)){
