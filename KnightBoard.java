@@ -1,21 +1,47 @@
 public class KnightBoard{
-  public class Outgoing{
-    public int m;
-    public int n;
-    public int[] possib;
-    public Outgoing(int r, int c){
-      moves = new int[r][c];}
-
+  private class Outgoing{
+    public int posR;
+    public int posC;
+    public int possib;
+    public Outgoing(int x, int y, int value){
+      value = possib;
+      posR= x;
+      posC = y;}
+    public void edit(int value){
+      possib = value;}
+    }
     public void update(int r, int c){
-      for(int i = 0; i < possib.length; i++){
-        possib --;}}
-    
-  }
+      possib --;}}
+
+  public Outgoing[][] options;
   public int[][] board;
   public static final int incR[] = { 2, 1, -1, -2, -2, -1,  1,  2 , 2 };
   public static final int incC[] = { 1, 2,  2,  1, -1, -2, -2, -1, 1 };
 
+  public void fillBoard(){
+    for(int i = 0; i < options.length; i++){
+      for(int j = 0; j < options[0].length; j++){
+        options[i][j] = new Outgoing(i, j, 8);
+        if(i == 0 ||j == 0 || i == options.length - 1 || j == options[0].length - 1){
+          options[i][j] = new Outgoing(i, j, 4);}
+        if(i == 1 ||j == 1 || i == options.length - 2 || j == options[0].length - 2){
+          options[i][j] = new Outgoing(i, j, 6);}
+        if(i * j == 0 && (i + j == options.length - 1 || i + j == 0 || i + j == options[0].length)){
+          options[i][j] = new Outgoing(i, j, 2);}
+        if((i == options.length - 2 && j == 0) || (i == 1 && j == 0) || (i == 0 && j == 1) ||
+         (i == 0 && j == options[0].length - 2) || (i == options.length - 1 && j == 1) || (i == options.length - 1 && j == 1)
+        || (i == options.length - 2 && j == options[0].length - 1) || (i == options.length - 1 && j == options[0].length - 2)){
+          options[i][j] = new Outgoing(i, j, 3);}
+        }}
+    options[1][1].edit(4);
+    options[1][options[0].length - 2].edit(4);
+    options[options.length - 2][1].edit(4);
+    options[options.length - 2][options[0].length - 2].edit(4);}
+
   public KnightBoard(int startingRow, int startingCol){
+    options = new Outgoing[startingRow][startingCol];
+    fillBoard();
+    System.out.println(options)
     counter = 0;
     board = new int[startingRow][startingCol];}
 
