@@ -9,8 +9,7 @@ public class KnightBoard{
       posC = y;}
     public void edit(int value){
       possib = value;}
-    }
-    public void update(int r, int c){
+    public void update(){
       possib --;}}
 
   public Outgoing[][] options;
@@ -41,7 +40,6 @@ public class KnightBoard{
   public KnightBoard(int startingRow, int startingCol){
     options = new Outgoing[startingRow][startingCol];
     fillBoard();
-    System.out.println(options)
     counter = 0;
     board = new int[startingRow][startingCol];}
 
@@ -106,6 +104,9 @@ public class KnightBoard{
 
   public void countSolutionsH(int r, int c){
     board[r][c] = 1;
+    for(int i = 0; i < incR.length; i++){
+      if(r + incR[i] > 0 && c + incC[i] > 0 && r + incR[i] < board.length && c + incC[i] < board.length){
+        options[r + incR[i]][c + incC[i]].update();}}
     if(filled(board)){
       counter ++;
       return;}
