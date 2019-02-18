@@ -1,5 +1,6 @@
+import java.util.ArrayList;
 public class KnightBoard{
-  private class Outgoing{
+  public class Outgoing implements Comparable{
     public int posR;
     public int posC;
     public int possib;
@@ -7,15 +8,19 @@ public class KnightBoard{
       value = possib;
       posR= x;
       posC = y;}
+    public int getPossib(){
+      return possib;}
     public void edit(int value){
       possib = value;}
     public void update(){
-      possib --;}}
+      possib --;}
+    public int compareTo(Outgoing other){
+      return getPossib() - other.getPossib();}}
 
   public Outgoing[][] options;
   public int[][] board;
-  public static final int incR[] = { 2, 1, -1, -2, -2, -1,  1,  2 , 2 };
-  public static final int incC[] = { 1, 2,  2,  1, -1, -2, -2, -1, 1 };
+  public static int incR[] = { 2, 1, -1, -2, -2, -1,  1,  2 , 2 };
+  public static int incC[] = { 1, 2,  2,  1, -1, -2, -2, -1, 1 };
 
   public void fillBoard(){
     for(int i = 0; i < options.length; i++){
@@ -99,10 +104,17 @@ public class KnightBoard{
       solveH( r  + 1, c - 2,1, -2);}
 
   public int countSolutions(int r, int c){
-    countSolutionsH(r, c);
+    countSolutionsH(new ArrayList<Outgoing>(), r, c);
      return counter;}
+  public ArrayList<Outgoing> arrange( int r, int c){
+    ArrayList<Outgoing> data = new ArrayList<Outgoing>();
+    for(int i = 0; i < incR.length; i++){
+      if(r + incR[i] > 0 && c + incC[i] > 0 && r + incR[i] < board.length && c + incC[i] < board.length){
+        data.add(options[r + incR[i]][c + incC[i]]);}}
+    sort(data);
+    return data;}
 
-  public void countSolutionsH(int r, int c){
+  public void countSolutionsH(ArrayList<Outgoing> moveset, int r, int c){
     board[r][c] = 1;
     for(int i = 0; i < incR.length; i++){
       if(r + incR[i] > 0 && c + incC[i] > 0 && r + incR[i] < board.length && c + incC[i] < board.length){
@@ -110,9 +122,10 @@ public class KnightBoard{
     if(filled(board)){
       counter ++;
       return;}
-    for(int i = 0; i < incR.length; i++){
-      if(valid(r + incR[i], c + incC[i])){
-        countSolutionsH(r + incR[i], c + incC[i]);}}
+    moveset = arrange(r, c);
+    for(int i = 0; i < moveset.size(); i++){
+      if(valid(moveset.get(i).posR, moveset.get(i).posC)){
+        countSolutionsH(moveset, moveset.get(i).posR, moveset.get(i).posC);}}
     board[r][c] = 0;
   }
 }
