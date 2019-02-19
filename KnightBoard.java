@@ -1,19 +1,19 @@
-import java.util.ArrayList;
+import java.util.*;
 public class KnightBoard{
-  public class Outgoing implements Comparable{
+  public class Outgoing implements Comparable<Outgoing>{
     public int posR;
     public int posC;
     public int possib;
     public Outgoing(int x, int y, int value){
-      value = possib;
+      possib = value;
       posR= x;
       posC = y;}
     public int getPossib(){
       return possib;}
     public void edit(int value){
       possib = value;}
-    public void update(){
-      possib --;}
+    public void update(int increment){
+      possib += increment;}
     public int compareTo(Outgoing other){
       return getPossib() - other.getPossib();}}
 
@@ -21,6 +21,7 @@ public class KnightBoard{
   public int[][] board;
   public static int incR[] = { 2, 1, -1, -2, -2, -1,  1,  2 , 2 };
   public static int incC[] = { 1, 2,  2,  1, -1, -2, -2, -1, 1 };
+  public int counter;
 
   public void fillBoard(){
     for(int i = 0; i < options.length; i++){
@@ -41,6 +42,16 @@ public class KnightBoard{
     options[1][options[0].length - 2].edit(4);
     options[options.length - 2][1].edit(4);
     options[options.length - 2][options[0].length - 2].edit(4);}
+
+  public String print(Outgoing[][] ary){
+    String output = "";
+    for(int i = 0; i < options.length; i++){
+      for(int j = 0; j < options[0].length; j++){
+        output += ary[i][j].getPossib() + " ";}
+      output += "\n";
+      }
+    return output;
+  }
 
   public KnightBoard(int startingRow, int startingCol){
     options = new Outgoing[startingRow][startingCol];
@@ -87,8 +98,6 @@ public class KnightBoard{
           return false;}}}
     return true;}
 
-  public int counter;
-  public int solutions;
   public boolean solveH( int r, int c, int incR, int incC){
     if(filled(board)){
       return true;}
@@ -106,26 +115,39 @@ public class KnightBoard{
   public int countSolutions(int r, int c){
     countSolutionsH(new ArrayList<Outgoing>(), r, c);
      return counter;}
+
   public ArrayList<Outgoing> arrange( int r, int c){
     ArrayList<Outgoing> data = new ArrayList<Outgoing>();
     for(int i = 0; i < incR.length; i++){
       if(r + incR[i] > 0 && c + incC[i] > 0 && r + incR[i] < board.length && c + incC[i] < board.length){
         data.add(options[r + incR[i]][c + incC[i]]);}}
-    sort(data);
+    Collections.sort(data);
     return data;}
 
   public void countSolutionsH(ArrayList<Outgoing> moveset, int r, int c){
     board[r][c] = 1;
-    for(int i = 0; i < incR.length; i++){
-      if(r + incR[i] > 0 && c + incC[i] > 0 && r + incR[i] < board.length && c + incC[i] < board.length){
-        options[r + incR[i]][c + incC[i]].update();}}
+    // mark knight position
     if(filled(board)){
+      // if knight tour add to counter
       counter ++;
       return;}
+    System.out.println(toString());
+    // arranges your moveset so that it's in order of least possible moves to greatest
     moveset = arrange(r, c);
     for(int i = 0; i < moveset.size(); i++){
+      // all outgoing moves from your position now have one less path to get to it
+      // go through each square in moveset and update options
+      if(valid(moveset.get(i).posR, moveset.get(i).posC)){
+        options[moveset.get(i).posR][moveset.get(i).posC].update(-1);}}
+
+    for(int i = 0; i < moveset.size(); i++){
+      //  iterate through moveset
+      // and try going through there
       if(valid(moveset.get(i).posR, moveset.get(i).posC)){
         countSolutionsH(moveset, moveset.get(i).posR, moveset.get(i).posC);}}
+    // backtrack by setting current position to 0 and upgrading each outgoing move by 1
     board[r][c] = 0;
-  }
+    for(int i = 0; i < moveset.size(); i++){
+      if(valid(moveset.get(i).posR, moveset.get(i).posC)){
+        options[moveset.get(i).posR][moveset.get(i).posC].update(1);}}}
 }
