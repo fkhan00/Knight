@@ -128,4 +128,39 @@ public class KnightBoard{
       if(valid(possibilites[j].posR, possibilites[j].posC)){
         options[possibilites[j].posR][possibilites[j].posC].update(1);}}
     return false;}
+
+    public static int counter = 0;
+    public int countSolutions(int r, int c){
+      counter = 0;
+      countSolutionsH(new Outgoing[8], r, c, 1);
+       return counter;}
+
+
+    public void countSolutionsH(Outgoing[] moveset, int r, int c, int num){
+      // mark knight position
+      if(num == board.length * board[0].length){
+        // if knight tour add to counter
+        System.out.println(counter);
+        counter ++;
+        board[r][c] = 0;
+        for(int i = 0; i < moveset.length; i++){
+          if(valid(moveset[i].posR, moveset[i].posC)){
+            options[moveset[i].posR][moveset[i].posC].update(1);}}
+        return;}
+      board[r][c] = num;
+      moveset = arrange(r, c);
+      for(int i = 0; i < moveset.length; i++){
+        if(valid(moveset[i].posR, moveset[i].posC)){
+          options[moveset[i].posR][moveset[i].posC].update(-1);}}
+
+      for(int i = 0; i < moveset.length; i++){
+        //  iterate through moveset
+        // and try going through there
+        if(valid(moveset[i].posR, moveset[i].posC)){
+          countSolutionsH(moveset, moveset[i].posR, moveset[i].posC, num + 1);}}
+      board[r][c] = 0;
+        for(int i = 0; i < moveset.length; i++){
+          if(valid(moveset[i].posR, moveset[i].posC)){
+            options[moveset[i].posR][moveset[i].posC].update(1);
+          }}}
   }
