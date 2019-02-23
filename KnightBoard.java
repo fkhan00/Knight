@@ -16,13 +16,19 @@ public class KnightBoard{
       possib += increment;}
     public int compareTo(Outgoing other){
       return getPossib() - other.getPossib();}}
-
+  // Outgoing class works
   public Outgoing[][] options;
+  // board is where the knight will be moving through
   public int[][] board;
+  //incR and incC are knight's moveset
   public static int incR[] = { 2, 1, -1, -2, -2, -1,  1,  2 , 2 };
   public static int incC[] = { 1, 2,  2,  1, -1, -2, -2, -1, 1 };
-  public int counter;
 
+  public KnightBoard(int startingRow, int startingCol){
+    options = new Outgoing[startingRow][startingCol];
+    fillBoard();
+    board = new int[startingRow][startingCol];}
+  // constructor works
   public void fillBoard(){
     for(int i = 0; i < options.length; i++){
       for(int j = 0; j < options[0].length; j++){
@@ -34,7 +40,7 @@ public class KnightBoard{
         if(i * j == 0 && (i + j == options.length - 1 || i + j == 0 || i + j == options[0].length)){
           options[i][j] = new Outgoing(i, j, 2);}
         if((i == options.length - 2 && j == 0) || (i == 1 && j == 0) || (i == 0 && j == 1) ||
-         (i == 0 && j == options[0].length - 2) || (i == options.length - 1 && j == 1) || (i == options.length - 1 && j == 1)
+          (i == 0 && j == options[0].length - 2) || (i == options.length - 1 && j == 1) || (i == options.length - 1 && j == 1)
         || (i == options.length - 2 && j == options[0].length - 1) || (i == options.length - 1 && j == options[0].length - 2)){
           options[i][j] = new Outgoing(i, j, 3);}
         }}
@@ -43,111 +49,83 @@ public class KnightBoard{
     options[options.length - 2][1].edit(4);
     options[options.length - 2][options[0].length - 2].edit(4);}
 
-  public String print(Outgoing[][] ary){
-    String output = "";
-    for(int i = 0; i < options.length; i++){
-      for(int j = 0; j < options[0].length; j++){
-        output += ary[i][j].getPossib() + " ";}
-      output += "\n";
-      }
-    return output;
-  }
-
-  public KnightBoard(int startingRow, int startingCol){
-    options = new Outgoing[startingRow][startingCol];
-    fillBoard();
-    counter = 0;
-    board = new int[startingRow][startingCol];}
-
+  public boolean valid(int r, int c){
+    // if within board and knight has not been here
+    return r >= 0 && c >= 0 && r < board.length && c < board.length && board[r][c] == 0;}
+  // valid works
   public String toString(){
     String output = "";
-    if(board.length * board.length < 10){
+    if(board.length -1 * board[0].length < 10){
       for(int i = 0; i < board.length; i++){
-        for(int j = 0; j < board[0].length; j++){
-          output += board[i][j];
-        }
-        output += "\n";}
-      return output;}
-    for(int i = 0; i < board.length; i++){
-      for(int j = 0; j < board[0].length; j++){
-        if(board[i][j] < 10){
-          output += " " + board[i][j];}
-        else{
-          output += board[i][j];}
-      }
-    output += "\n";}
+        for(int j = 0; j < board[0].length - 1; j++){
+            output += board[i][j] + "  ";}
+        output += board[i][board[0].length - 1];
+        output += "\n";}}
+    else{
+      for(int i = 0; i < board.length; i++){
+        for(int j = 0; j < board[0].length - 1; j++){
+            output += " " + board[i][j] + " ";}
+        output += " " + board[i][board[0].length];
+        output += "\n";}}
+    return output;}
+    // toString works
+  public Outgoing[] arrange(int row, int col){
+    ArrayList<Outgoing> data = new ArrayList<Outgoing>();
+    // take the coordinates from your moveset
+    // and add it to Outgoing[] data
+    for(int i = 0; i < incR.length; i++){
+      if(valid(row + incR[i], col + incC[i])){
+        data.add(options[row + incR[i]][col + incC[i]]);}}
+    Collections.sort(data);
+    // sort data using compareTo; sorts by least number of outgoing moves to most
+    Outgoing[] output = new Outgoing[data.size()];
+    for(int i = 0; i < data.size(); i++){
+      output[i] = data.get(i);}
     return output;}
 
-  public boolean solve(int startingRow, int startingCol){
-    for(int i = 0; i < board.length; i++){
-      for(int j = 0; j < board.length; j++){
-        if(board[i][j] != 0){
-          throw new IllegalStateException("please give an empty board");
-        }
-        if(startingRow < 0 || startingCol < 0){
-          throw new IllegalArgumentException("please enter non negative parameters");}}}
-    return solveH( startingRow, startingCol, 0, 0);}
-
-  public boolean valid(int r, int c){
-    return r >= 0 && c >= 0 && r < board.length && c < board.length && board[r][c] == 0;}
-
-  public boolean filled(int[][] ary){
+    public String display(Outgoing[][] ary){
+      String output = "";
+      for(int i = 0; i < options.length; i++){
+        for(int j = 0; j < options[0].length; j++){
+          output += ary[i][j].getPossib() + " ";}
+        output += "\n";}
+      return output;
+      }
+  // arrange works
+  public String print(Outgoing[] ary){
+    String output = "";
     for(int i = 0; i < ary.length; i++){
-      for(int j = 0; j < ary.length; j++){
-        if(ary[i][j] == 0){
-          return false;}}}
-    return true;}
+      output += ary[i].posR + " " + ary[i].posC + " " + ary[i].getPossib() + "\n";}
+    return output;}
 
-  public boolean solveH( int r, int c, int incR, int incC){
-    if(filled(board)){
+  public boolean solve(int row, int col){
+    // checks if given empty board
+    for(int i = 0; i < board.length; i++){
+      for(int j = 0; j < board[0].length; j++){
+        if(board[i][j] != 0){
+          throw new IllegalStateException("please give an empty board");}
+        if(row < 0 || col < 0){
+          throw new IllegalArgumentException("please enter non negative parameters");}}}
+    // calls on helper
+    board[row][col] = 1;
+    return solveH(row, col, 2, new Outgoing[8]);}
+    //possiblites is the problem
+  public boolean solveH(int row, int col, int num, Outgoing[] possibilites){
+    if(num == board.length * board[0].length){
       return true;}
-    if(! valid (r, c)){
-      counter ++;
-      if(counter == 8){
-        board[r - incR][c - incC] = 0;}
-      return false;}
-    board[r][c] = 1;
-     return solveH( r + 1, c + 2, 1, 2) || solveH( r + 2, c + 1, 2, 1) || solveH( r + 2, c - 1, 2, -1) ||
-     solveH( r - 1, c + 2, -1, 2) ||
-     solveH( r - 2, c + 1, -2, 1) ||  solveH( r - 1, c - 2, -1, -2) || solveH( r - 2, c - 1, -2, -1) ||
-      solveH( r  + 1, c - 2,1, -2);}
-
-  public int countSolutions(int r, int c){
-    countSolutionsH(new ArrayList<Outgoing>(), r, c);
-     return counter;}
-
-  public ArrayList<Outgoing> arrange( int r, int c){
-    ArrayList<Outgoing> data = new ArrayList<Outgoing>();
-    for(int i = 0; i < incR.length; i++){
-      if(r + incR[i] > 0 && c + incC[i] > 0 && r + incR[i] < board.length && c + incC[i] < board.length){
-        data.add(options[r + incR[i]][c + incC[i]]);}}
-    Collections.sort(data);
-    return data;}
-
-  public void countSolutionsH(ArrayList<Outgoing> moveset, int r, int c){
-    board[r][c] = 1;
-    // mark knight position
-    if(filled(board)){
-      // if knight tour add to counter
-      counter ++;
-      return;}
-    System.out.println(toString());
-    // arranges your moveset so that it's in order of least possible moves to greatest
-    moveset = arrange(r, c);
-    for(int i = 0; i < moveset.size(); i++){
-      // all outgoing moves from your position now have one less path to get to it
-      // go through each square in moveset and update options
-      if(valid(moveset.get(i).posR, moveset.get(i).posC)){
-        options[moveset.get(i).posR][moveset.get(i).posC].update(-1);}}
-
-    for(int i = 0; i < moveset.size(); i++){
-      //  iterate through moveset
-      // and try going through there
-      if(valid(moveset.get(i).posR, moveset.get(i).posC)){
-        countSolutionsH(moveset, moveset.get(i).posR, moveset.get(i).posC);}}
-    // backtrack by setting current position to 0 and upgrading each outgoing move by 1
-    board[r][c] = 0;
-    for(int i = 0; i < moveset.size(); i++){
-      if(valid(moveset.get(i).posR, moveset.get(i).posC)){
-        options[moveset.get(i).posR][moveset.get(i).posC].update(1);}}}
-}
+    possibilites = arrange(row, col);
+    for(int i = 0; i < possibilites.length; i++){
+      if(valid(possibilites[i].posR, possibilites[i].posC)){
+        options[possibilites[i].posR][possibilites[i].posC].update(-1);}}
+    for(int i = 0; i < possibilites.length; i++){
+        if(valid(possibilites[i].posR, possibilites[i].posC)){
+          board[possibilites[i].posR][possibilites[i].posC] = num;
+          if(solveH(possibilites[i].posR, possibilites[i].posC, num + 1, possibilites)){
+            return true;}
+          else{
+            board[possibilites[i].posR][possibilites[i].posC] = 0;}}}
+    for(int j = 0; j < possibilites.length; j++){
+      if(valid(possibilites[j].posR, possibilites[j].posC)){
+        options[possibilites[j].posR][possibilites[j].posC].update(1);}}
+    return false;}
+  }
