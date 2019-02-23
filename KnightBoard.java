@@ -140,7 +140,6 @@ public class KnightBoard{
       // mark knight position
       if(num == board.length * board[0].length){
         // if knight tour add to counter
-        System.out.println(counter);
         counter ++;
         board[r][c] = 0;
         for(int i = 0; i < moveset.length; i++){
