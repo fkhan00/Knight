@@ -21,8 +21,8 @@ public class KnightBoard{
   // board is where the knight will be moving through
   public int[][] board;
   //incR and incC are knight's moveset
-  public static int incR[] = { 2, 1, -1, -2, -2, -1,  1,  2 , 2 };
-  public static int incC[] = { 1, 2,  2,  1, -1, -2, -2, -1, 1 };
+  public static int incR[] = { 1, 1, 2, 2, -1, -1, -2, -2};
+  public static int incC[] = { 2, -2, 1, -1, 2, -2, 1, -1};
 
   public KnightBoard(int startingRow, int startingCol){
     options = new Outgoing[startingRow][startingCol];
@@ -51,7 +51,7 @@ public class KnightBoard{
 
   public boolean valid(int r, int c){
     // if within board and knight has not been here
-    return r >= 0 && c >= 0 && r < board.length && c < board.length && board[r][c] == 0;}
+    return r >= 0 && c >= 0 && r < board.length && c < board[0].length && board[r][c] == 0;}
   // valid works
   public String toString(){
     String output = "";
