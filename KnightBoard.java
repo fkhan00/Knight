@@ -131,6 +131,12 @@ public class KnightBoard{
 
     public static int counter = 0;
     public int countSolutions(int r, int c){
+      for(int i = 0; i < board.length; i++){
+        for(int j = 0; j < board[0].length; j++){
+          if(board[i][j] != 0){
+            throw new IllegalStateException("please give an empty board");}
+          if(r < 0 || c < 0){
+            throw new IllegalArgumentException("please enter non negative parameters");}}}
       counter = 0;
       countSolutionsH(new Outgoing[8], r, c, 1);
        return counter;}
@@ -162,4 +168,4 @@ public class KnightBoard{
           if(valid(moveset[i].posR, moveset[i].posC)){
             options[moveset[i].posR][moveset[i].posC].update(1);
           }}}
-  }
+}
