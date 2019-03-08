@@ -25,6 +25,9 @@ public class KnightBoard{
   public static int incC[] = { 2, -2, 1, -1, 2, -2, 1, -1};
 
   public KnightBoard(int startingRow, int startingCol){
+    if(startingRow <= 0 || startingCol <= 0){
+      throw new IllegalArgumentException("please enter nonnegative and nonzero parameters");
+    }
     options = new Outgoing[startingRow][startingCol];
     fillBoard();
     board = new int[startingRow][startingCol];}
