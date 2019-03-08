@@ -61,14 +61,25 @@ public class KnightBoard{
     if(board.length -1 * board[0].length < 10){
       for(int i = 0; i < board.length; i++){
         for(int j = 0; j < board[0].length - 1; j++){
-            output += board[i][j] + "  ";}
-        output += board[i][board[0].length - 1];
+          if(board[i][j] == 0){
+            output += " _ ";
+          }
+          else{
+            output += board[i][j] + "  ";}}
+        if(board[i][board[0].length - 1] == 0){
+          output += " _ ";}
+        else{
+        output += board[i][board[0].length - 1];}
         output += "\n";}}
     else{
       for(int i = 0; i < board.length; i++){
         for(int j = 0; j < board[0].length - 1; j++){
-            output += " " + board[i][j] + " ";}
-        output += " " + board[i][board[0].length];
+          if(board[i][j] == 0){
+            output += " _ ";
+          }
+          else{
+            output += " " + board[i][j] + " ";}}
+        output += " " + board[i][board[0].length - 1];
         output += "\n";}}
     return output;}
     // toString works
@@ -107,8 +118,8 @@ public class KnightBoard{
       for(int j = 0; j < board[0].length; j++){
         if(board[i][j] != 0){
           throw new IllegalStateException("please give an empty board");}
-        if(row < 0 || col < 0){
-          throw new IllegalArgumentException("please enter non negative parameters");}}}
+        if(row < 0 || col < 0 || row >= board.length || col >= board[0].length){
+          throw new IllegalArgumentException("please enter parameters within the bounds of the array");}}}
     // calls on helper
     board[row][col] = 1;
     return solveH(row, col, 2, new Outgoing[8]);}
@@ -133,9 +144,16 @@ public class KnightBoard{
     return false;}
 
     public static int counter = 0;
-    public int countSolutions(int r, int c){
+    public int countSolutions(int row, int col){
+      // checks if given empty board
+      for(int i = 0; i < board.length; i++){
+        for(int j = 0; j < board[0].length; j++){
+          if(board[i][j] != 0){
+            throw new IllegalStateException("please give an empty board");}
+          if(row < 0 || col < 0 || row >= board.length || col >= board[0].length){
+            throw new IllegalArgumentException("please enter parameters within the bounds of the array");}}}
       counter = 0;
-      countSolutionsH(new Outgoing[8], r, c, 1);
+      countSolutionsH(new Outgoing[8], row, col, 1);
        return counter;}
 
 
